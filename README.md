@@ -1,8 +1,8 @@
 # Yabeda::Resque
 
-TODO: Delete this and the text below, and describe your gem
+[Yabeda](https://github.com/yabeda-rb/yabeda) metrics for your [Resque](https://github.com/resque/resque) jobs.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/yabeda/resque`. To experiment with that code, run `bin/console` for an interactive prompt.
+There are other options like [yabeda-activejob](https://github.com/Fullscript/yabeda-activejob), but this gem is specifically for Resque without ActiveJob.
 
 ## Installation
 
