@@ -24,13 +24,15 @@ Yabeda::Resque.install!
 
 ## Provided metrics
 
-| Metric name | Type | Description              |
-|-------------|------|--------------------------|
-| `jobs_pending` | gauge | Number of jobs in all queues |
-| `jobs_processed` | gauge | Number of jobs processed |
-| `jobs_failed` | gauge | Number of jobs currently failed |
-| `workers_total` | gauge | Number of workers |
-| `workers_working` | gauge | Number of workers currently working |
+| Metric name       | Type  | Tags         | Description                         |
+|-------------------|-------|--------------|-------------------------------------|
+| `jobs_pending`    | gauge | none         | Number of jobs in all queues        |
+| `jobs_processed`  | gauge | none         | Number of jobs processed            |
+| `jobs_failed`     | gauge | none         | Number of jobs currently failed     |
+| `workers_total`   | gauge | none         | Number of workers                   |
+| `workers_working` | gauge | none         | Number of workers currently working |
+| `queue_size`       | gauge | queue (name) | Number of jobs in a specific queue  |
+
 
 ## Development
 

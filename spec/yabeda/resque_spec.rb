@@ -16,11 +16,29 @@ RSpec.describe Yabeda::Resque do
   end
 
   context "when job is enqueued" do
-    it "increments successful job counter" do
+    it "increments enqueued job counter" do
       Resque.enqueue(DefaultJob)
       expect { Yabeda.collect! }.to \
         update_yabeda_gauge(Yabeda.resque.jobs_pending)
         .with(1)
+    end
+
+    it "increments queue size" do
+      Resque.enqueue(DefaultJob)
+      expect { Yabeda.collect! }.to \
+        update_yabeda_gauge(Yabeda.resque.queue_size)
+        .with_tags({queue: "default"})
+        .with(1)
+    end
+
+    context "when other queue is used" do
+      it "increments queue size for other queue" do
+        Resque.enqueue_to(:other, DefaultJob)
+        expect { Yabeda.collect! }.to \
+          update_yabeda_gauge(Yabeda.resque.queue_size)
+          .with_tags({queue: "other"})
+          .with(1)
+      end
     end
   end
 
@@ -36,7 +54,7 @@ RSpec.describe Yabeda::Resque do
   end
 
   context "when a job fails" do
-    it "increments successful job counter" do
+    it "increments failed job counter" do
       Resque.inline = true
       Resque.enqueue(DefaultJob)
 

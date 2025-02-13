@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Add queue_size metric
 
 ## [0.1.0] - 2025-02-13
 

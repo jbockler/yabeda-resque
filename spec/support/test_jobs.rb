@@ -13,3 +13,11 @@ class FailJob
     raise "I'm a failure"
   end
 end
+
+class OtherQueueJob
+  @queue = :other
+
+  def self.perform
+    # do something
+  end
+end

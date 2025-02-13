@@ -15,6 +15,8 @@ module Yabeda
             gauge :jobs_processed, aggregation: :most_recent, comment: "Number of processed jobs"
             gauge :jobs_failed, aggregation: :most_recent, comment: "Number of failed jobs"
 
+            gauge :queue_size, tags: %i[queue], aggregation: :most_recent, comment: "Number of jobs in a specific queue"
+
             gauge :workers_total, aggregation: :most_recent, comment: "Number of workers"
             gauge :workers_working, aggregation: :most_recent, comment: "Number of workers busy"
           end
@@ -24,6 +26,10 @@ module Yabeda
             resque.jobs_failed.set({}, resque_info[:failed])
             resque.jobs_pending.set({}, resque_info[:pending])
             resque.jobs_processed.set({}, resque_info[:processed])
+
+            ::Resque.queues.each do |queue|
+              resque.queue_size.set({queue: queue}, ::Resque.size(queue))
+            end
 
             resque.workers_total.set({}, resque_info[:workers])
             resque.workers_working.set({}, resque_info[:working])
