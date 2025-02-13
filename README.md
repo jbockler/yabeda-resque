@@ -12,11 +12,11 @@ Install the gem and add to the application's Gemfile by executing:
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install yabea-resque
+    $ gem install yabeda-resque
 
 ## Usage
 
-Add the following code to your application:
+Add the following code to your existing Yabeda setup:
 
 ```ruby
 Yabeda::Resque.install!
