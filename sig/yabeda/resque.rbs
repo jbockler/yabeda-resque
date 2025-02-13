@@ -1,6 +1,8 @@
+# See the writing guide of rbs: https://github.com/ruby/rbs#guides#
 module Yabeda
   module Resque
     VERSION: String
-    # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+
+    def self.install!: () -> void
   end
 end

@@ -30,4 +30,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+
+  spec.add_dependency "resque", "~> 2"
+  spec.add_dependency "yabeda", "~> 0.6"
 end

@@ -6,19 +6,31 @@ There are other options like [yabeda-activejob](https://github.com/Fullscript/ya
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ bundle add yabeda-resque
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ gem install yabea-resque
 
 ## Usage
 
-TODO: Write usage instructions here
+Add the following code to your application:
+
+```ruby
+Yabeda::Resque.install!
+```
+
+## Provided metrics
+
+| Metric name | Type | Description              |
+|-------------|------|--------------------------|
+| `jobs_pending` | gauge | Number of jobs in all queues |
+| `jobs_processed` | gauge | Number of jobs processed |
+| `jobs_failed` | gauge | Number of jobs currently failed |
+| `workers_total` | gauge | Number of workers |
+| `workers_working` | gauge | Number of workers currently working |
 
 ## Development
 

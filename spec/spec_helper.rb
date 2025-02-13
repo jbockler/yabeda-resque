@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require "yabeda/resque"
+require "yabeda/rspec"
+require "mock_redis"
+
+require_relative "support/test_jobs"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
