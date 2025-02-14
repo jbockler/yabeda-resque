@@ -31,7 +31,7 @@ Yabeda::Resque.install!
 | `jobs_failed`     | gauge | none         | Number of jobs currently failed     |
 | `workers_total`   | gauge | none         | Number of workers                   |
 | `workers_working` | gauge | none         | Number of workers currently working |
-| `queue_size`       | gauge | queue (name) | Number of jobs in a specific queue  |
+| `queue_sizes`     | gauge | queue (name) | Number of jobs in a specific queue  |
 
 Yabeda::Resque detects if [resque-scheduler](https://github.com/resque/resque-scheduler) is being used and adds the following metrics:
 
@@ -40,7 +40,7 @@ Yabeda::Resque detects if [resque-scheduler](https://github.com/resque/resque-sc
 | `jobs_delayed` | gauge | none         | Number of delayed jobs |
 
 Please note that due to the design of the resque-scheduler the delayed jobs are not
-included in the `queue_size` metric. Gathering this information can be quite expensive when there are a lot of delayed jobs.
+included in the `queue_sizes` metric. Gathering this information can be quite expensive when there are a lot of delayed jobs.
 
 ## Development
 

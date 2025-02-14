@@ -12,7 +12,7 @@ module Yabeda
         defined?(::Resque::Scheduler)
       end
 
-      def install!(**options)
+      def install!
         Yabeda.configure do
           group :resque do
             default_options = {aggregation: :most_recent}
@@ -20,7 +20,7 @@ module Yabeda
             gauge :jobs_processed, **default_options, comment: "Number of processed jobs"
             gauge :jobs_failed, **default_options, comment: "Number of failed jobs"
 
-            gauge :queue_size, tags: %i[queue], **default_options, comment: "Number of jobs in a specific queue"
+            gauge :queue_sizes, tags: %i[queue], **default_options, comment: "Number of jobs in a specific queue"
 
             gauge :workers_total, **default_options, comment: "Number of workers"
             gauge :workers_working, **default_options, comment: "Number of workers busy"
@@ -42,7 +42,7 @@ module Yabeda
             end
 
             ::Resque.queue_sizes.each do |queue, size|
-              resque.queue_size.set({queue: queue}, size)
+              resque.queue_sizes.set({queue: queue}, size)
             end
 
             resque.workers_total.set({}, resque_info[:workers])

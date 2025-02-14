@@ -26,7 +26,7 @@ RSpec.describe Yabeda::Resque do
     it "increments queue size" do
       Resque.enqueue(DefaultJob)
       expect { Yabeda.collect! }.to \
-        update_yabeda_gauge(Yabeda.resque.queue_size)
+        update_yabeda_gauge(Yabeda.resque.queue_sizes)
         .with_tags({queue: "default"})
         .with(1)
     end
@@ -35,7 +35,7 @@ RSpec.describe Yabeda::Resque do
       it "increments queue size for other queue" do
         Resque.enqueue_to(:other, DefaultJob)
         expect { Yabeda.collect! }.to \
-          update_yabeda_gauge(Yabeda.resque.queue_size)
+          update_yabeda_gauge(Yabeda.resque.queue_sizes)
           .with_tags({queue: "other"})
           .with(1)
       end
