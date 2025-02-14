@@ -64,6 +64,15 @@ RSpec.describe Yabeda::Resque do
     end
   end
 
+  context "when a job is delayed" do
+    it "increments delayed job counter" do
+      Resque.enqueue_in(1, DefaultJob)
+      expect { Yabeda.collect! }.to \
+        update_yabeda_gauge(Yabeda.resque.jobs_delayed)
+        .with(1)
+    end
+  end
+
   context "workers" do
     it "collects workers count" do
       Resque.inline = true

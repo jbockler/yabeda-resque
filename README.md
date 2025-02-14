@@ -33,6 +33,14 @@ Yabeda::Resque.install!
 | `workers_working` | gauge | none         | Number of workers currently working |
 | `queue_size`       | gauge | queue (name) | Number of jobs in a specific queue  |
 
+Yabeda::Resque detects if [resque-scheduler](https://github.com/resque/resque-scheduler) is being used and adds the following metrics:
+
+| Metric name    | Type  | Tags         | Description            |
+|----------------|-------|--------------|------------------------|
+| `jobs_delayed` | gauge | none         | Number of delayed jobs |
+
+Please note that due to the design of the resque-scheduler the delayed jobs are not
+included in the `queue_size` metric. Gathering this information can be quite expensive when there are a lot of delayed jobs.
 
 ## Development
 
@@ -42,7 +50,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/yabeda-resque. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/yabeda-resque/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/jbockler/yabeda-resque. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/jbockler/yabeda-resque/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -50,4 +58,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Yabeda::Resque project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/yabeda-resque/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Yabeda::Resque project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/jbockler/yabeda-resque/blob/main/CODE_OF_CONDUCT.md).

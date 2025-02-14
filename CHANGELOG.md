@@ -1,5 +1,8 @@
 ## [Unreleased]
+
+## [1.0.0] - 2025-02-4
 - Add queue_size metric
+- Add jobs_delayed metric for resque-scheduler
 
 ## [0.1.0] - 2025-02-13
 

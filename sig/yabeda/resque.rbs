@@ -4,5 +4,7 @@ module Yabeda
     VERSION: String
 
     def self.install!: () -> void
+
+    def self.monitor_delayed?: () -> bool
   end
 end
