@@ -22,16 +22,24 @@ Add the following code to your existing Yabeda setup:
 Yabeda::Resque.install!
 ```
 
+## Configuration
+
+Configuration can be passed to the `Yabeda::Resque.install!` method, e.g.: `Yabeda::Resque.install!(option_name: :value)` The following options are available:
+
+* `jobs_processing_oldest_age_unit`:
+    The unit of the `jobs_processing_oldest_age` metric. This can be set to `:seconds`, `:minutes`, `:hours` or `:days`. The default value is nil, which means the metric is turned off and will not collected.
+
 ## Provided metrics
 
-| Metric name       | Type  | Tags         | Description                         |
-|-------------------|-------|--------------|-------------------------------------|
-| `jobs_pending`    | gauge | none         | Number of jobs in all queues        |
-| `jobs_processed`  | gauge | none         | Number of jobs processed            |
-| `jobs_failed`     | gauge | none         | Number of jobs currently failed     |
-| `workers_total`   | gauge | none         | Number of workers                   |
-| `workers_working` | gauge | none         | Number of workers currently working |
-| `queue_sizes`     | gauge | queue (name) | Number of jobs in a specific queue  |
+| Metric name       | Type  | Tags     | Description                                          |
+|-------------------|-------|----------|------------------------------------------------------|
+| `jobs_pending`    | gauge | none     | Number of jobs in all queues                         |
+| `jobs_processed`  | gauge | none     | Number of jobs processed                             |
+| `jobs_failed`     | gauge | none     | Number of jobs currently failed                      |
+| `workers_total`   | gauge | none     | Number of workers                                    |
+| `workers_working` | gauge | none     | Number of workers currently working                  |
+| `queue_sizes`     | gauge | queue (name) | Number of jobs in a specific queue                   |
+| `jobs_processing_oldest_age`     | gauge | none     | Age of the oldest processing job (unit configurable) |
 
 Yabeda::Resque detects if [resque-scheduler](https://github.com/resque/resque-scheduler) is being used and adds the following metrics:
 

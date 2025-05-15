@@ -15,4 +15,5 @@ gem "resque-scheduler"
 
 group :test do
   gem "mock_redis"
+  gem "timecop"
 end

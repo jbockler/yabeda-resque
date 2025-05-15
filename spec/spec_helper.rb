@@ -4,6 +4,7 @@ require "yabeda/resque"
 require "yabeda/rspec"
 require "mock_redis"
 require "resque-scheduler"
+require "timecop"
 
 require_relative "support/test_jobs"
 
