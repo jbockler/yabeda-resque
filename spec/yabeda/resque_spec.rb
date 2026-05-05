@@ -162,6 +162,21 @@ RSpec.describe Yabeda::Resque do
         update_yabeda_gauge(Yabeda.resque.jobs_delayed)
         .with(1)
     end
+
+    it "counts delayed jobs across multiple timestamps" do
+      Resque.enqueue_at(Time.now + 60, DefaultJob)
+      Resque.enqueue_at(Time.now + 60, OtherQueueJob)
+      Resque.enqueue_at(Time.now + 120, DefaultJob)
+      expect { Yabeda.collect! }.to \
+        update_yabeda_gauge(Yabeda.resque.jobs_delayed)
+        .with(3)
+    end
+
+    it "reports 0 when no jobs are delayed" do
+      expect { Yabeda.collect! }.to \
+        update_yabeda_gauge(Yabeda.resque.jobs_delayed)
+        .with(0)
+    end
   end
 
   context "workers" do
