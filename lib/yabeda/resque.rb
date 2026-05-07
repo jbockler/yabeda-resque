@@ -18,16 +18,17 @@ module Yabeda
 
       # Pipelined alternative to Resque.count_all_scheduled_jobs from resque-scheduler.
       # The original implementation issues a sequential LLEN call per timestamp, resulting in N round-trips to Redis.
-      # This version pipelines all LLEN calls into a single round-trip,
-      # which is significantly faster when there are many delayed timestamps
+      # This version pipelines LLEN calls in batches to avoid blocking the Redis thread for too long,
+      # which is significantly faster when there are many delayed timestamps.
       def count_all_scheduled_jobs_pipelined
         timestamps = ::Resque.redis.zrange(:delayed_queue_schedule, 0, -1)
         return 0 if timestamps.empty?
 
-        lengths = ::Resque.redis.pipelined do |pipeline|
-          timestamps.each { |ts| pipeline.llen("delayed:#{ts}") }
+        timestamps.each_slice(10_000).sum do |batch|
+          ::Resque.redis.pipelined do |pipeline|
+            batch.each { |ts| pipeline.llen("delayed:#{ts}") }
+          end.sum
         end
-        lengths.sum
       end
 
       def jobs_processing_oldest_age(config)
