@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [1.3.0] - 2026-05-11
+- Improve Performance of delayed job counting (#1, by @top-sigrid)
+
 ## [1.2.0] - 2025-05-16
 - Add jobs_processing_oldest_age metric with unit as config option
 
