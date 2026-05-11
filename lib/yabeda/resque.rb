@@ -16,6 +16,21 @@ module Yabeda
         defined?(::Resque::Scheduler)
       end
 
+      # Pipelined alternative to Resque.count_all_scheduled_jobs from resque-scheduler.
+      # The original implementation issues a sequential LLEN call per timestamp, resulting in N round-trips to Redis.
+      # This version pipelines LLEN calls in batches to avoid blocking the Redis thread for too long,
+      # which is significantly faster when there are many delayed timestamps.
+      def count_all_scheduled_jobs_pipelined
+        timestamps = ::Resque.redis.zrange(:delayed_queue_schedule, 0, -1)
+        return 0 if timestamps.empty?
+
+        timestamps.each_slice(10_000).sum do |batch|
+          ::Resque.redis.pipelined do |pipeline|
+            batch.each { |ts| pipeline.llen("delayed:#{ts}") }
+          end.sum
+        end
+      end
+
       def jobs_processing_oldest_age(config)
         oldest_timestamp = ::Resque.working.map { |worker| worker.job(false)["run_at"] }.min
         return 0 if oldest_timestamp.nil?
@@ -73,7 +88,7 @@ module Yabeda
             end
 
             if ::Yabeda::Resque.monitor_delayed?
-              resque.jobs_delayed.set({}, ::Resque.count_all_scheduled_jobs)
+              resque.jobs_delayed.set({}, ::Yabeda::Resque.count_all_scheduled_jobs_pipelined)
             end
 
             ::Resque.queue_sizes.each do |queue, size|
