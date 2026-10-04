@@ -11,6 +11,8 @@ gem "rspec", "~> 3.0"
 
 gem "standard", "~> 1.3"
 
+gem "resque", ENV.fetch("RESQUE_VERSION", "~> 3.0")
+
 gem "resque-scheduler"
 
 group :test do

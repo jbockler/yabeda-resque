@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Support resque 3.x (requirement widened to `>= 2, < 4`); no API or metric changes
 
 ## [1.3.0] - 2026-05-11
 - Improve Performance of delayed job counting (#1, by @top-sigrid)
