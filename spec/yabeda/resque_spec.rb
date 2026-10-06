@@ -64,7 +64,9 @@ RSpec.describe Yabeda::Resque do
     before(:each) do
       # Distinct queues on purpose: Worker#id is host:pid:queues, so identical
       # queues would collapse all three into a single registration.
-      [0, 60, 75].each_with_index do |seconds_ago, index|
+      # Oldest in the middle: the worker set comes back in no guaranteed order,
+      # and an oldest worker at either end would let .first or .last pass for .min.
+      [0, 75, 60].each_with_index do |seconds_ago, index|
         Timecop.freeze(start_time - seconds_ago)
         worker = Resque::Worker.new("worker_#{index}")
         worker.register_worker
