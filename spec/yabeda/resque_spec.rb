@@ -204,8 +204,8 @@ RSpec.describe Yabeda::Resque do
     end
 
     it "raises an ArgumentError naming an unsupported unit" do
-      expect { Yabeda::Resque.jobs_processing_oldest_age(jobs_processing_oldest_age_unit: "minutes") }.to \
-        raise_error(ArgumentError, /Unsupported time unit: "minutes"/)
+      expect { Yabeda::Resque.jobs_processing_oldest_age(jobs_processing_oldest_age_unit: :weeks) }.to \
+        raise_error(ArgumentError, /Unsupported time unit: :weeks/)
     end
   end
 end
