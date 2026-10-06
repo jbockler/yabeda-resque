@@ -193,4 +193,19 @@ RSpec.describe Yabeda::Resque do
         .with(0)
     end
   end
+
+  describe ".jobs_processing_oldest_age" do
+    before(:each) do
+      # A busy worker is required: with none, the method returns 0 before
+      # reaching the unit lookup, and the example would pass either way.
+      worker = Resque::Worker.new(:default)
+      worker.register_worker
+      worker.working_on(Resque::Job.new(:default, {"class" => "DefaultJob", "args" => []}))
+    end
+
+    it "raises an ArgumentError naming an unsupported unit" do
+      expect { Yabeda::Resque.jobs_processing_oldest_age(jobs_processing_oldest_age_unit: :weeks) }.to \
+        raise_error(ArgumentError, /Unsupported time unit: :weeks/)
+    end
+  end
 end

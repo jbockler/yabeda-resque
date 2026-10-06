@@ -37,7 +37,8 @@ module Yabeda
         age_in_seconds = (Time.now - Time.parse(oldest_timestamp)).to_i
         return 0 if age_in_seconds < 0
 
-        case config[:jobs_processing_oldest_age_unit]
+        unit = config[:jobs_processing_oldest_age_unit]
+        case unit
         when :seconds
           age_in_seconds
         when :minutes
