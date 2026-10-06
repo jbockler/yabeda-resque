@@ -4,6 +4,9 @@ RSpec.describe Yabeda::Resque do
   around(:each) do |example|
     Yabeda::Resque.install!
     Resque.redis = MockRedis.new
+    # Resque::Stat memoizes its own data_store, so it would keep the previous
+    # example's MockRedis unless it is re-pointed explicitly.
+    Resque::Stat.data_store = Resque.redis
     original_inline = Resque.inline
 
     example.run
@@ -45,9 +48,7 @@ RSpec.describe Yabeda::Resque do
 
   context "when job is processed" do
     it "increments successful job counter" do
-      allow(::Resque).to receive(:info).and_return({
-        processed: 1
-      })
+      Resque::Stat.incr(:processed, 1)
 
       expect { Yabeda.collect! }.to \
         update_yabeda_gauge(Yabeda.resque.jobs_processed)
@@ -56,18 +57,21 @@ RSpec.describe Yabeda::Resque do
   end
 
   context "when a job is being worked on" do
-    let(:start_time) { Time.now.utc }
-    let(:queue) { "default" }
-    let(:working_workers) do
-      [
-        Resque::Worker.new(queue).tap { |w| w.job = {"queue" => "default", "run_at" => start_time.iso8601, "payload" => []} },
-        Resque::Worker.new(queue).tap { |w| w.instance_variable_set :@job, {"queue" => "default", "run_at" => (start_time - 60).iso8601, "payload" => []} },
-        Resque::Worker.new(queue).tap { |w| w.instance_variable_set :@job, {"queue" => "default", "run_at" => (start_time - 75).iso8601, "payload" => []} }
-      ]
-    end
+    # Whole seconds: working_on records run_at with second precision, so a
+    # fractional start_time would make the expected ages drift.
+    let(:start_time) { Time.at(Time.now.to_i).utc }
 
     before(:each) do
-      allow(::Resque).to receive(:working).and_return(working_workers)
+      # Distinct queues on purpose: Worker#id is host:pid:queues, so identical
+      # queues would collapse all three into a single registration.
+      # Oldest in the middle: the worker set comes back in no guaranteed order,
+      # and an oldest worker at either end would let .first or .last pass for .min.
+      [0, 75, 60].each_with_index do |seconds_ago, index|
+        Timecop.freeze(start_time - seconds_ago)
+        worker = Resque::Worker.new("worker_#{index}")
+        worker.register_worker
+        worker.working_on(Resque::Job.new(:default, {"class" => "DefaultJob", "args" => []}))
+      end
     end
 
     context "when configured to measure in seconds" do
@@ -145,9 +149,14 @@ RSpec.describe Yabeda::Resque do
 
   context "when a job fails" do
     it "increments failed job counter" do
-      allow(::Resque).to receive(:info).and_return({
-        failed: 1
-      })
+      worker = Resque::Worker.new(:default)
+      worker.register_worker
+      Resque::Failure.create(
+        exception: RuntimeError.new("I'm a failure"),
+        worker: worker,
+        queue: :default,
+        payload: {"class" => "FailJob", "args" => []}
+      )
 
       expect { Yabeda.collect! }.to \
         update_yabeda_gauge(Yabeda.resque.jobs_failed)
@@ -181,10 +190,7 @@ RSpec.describe Yabeda::Resque do
 
   context "workers" do
     it "collects workers count" do
-      allow(::Resque).to receive(:info).and_return({
-        workers: 1,
-        working: 0
-      })
+      Resque::Worker.new(:default).register_worker
 
       expect { Yabeda.collect! }.to \
         update_yabeda_gauge(Yabeda.resque.workers_total)
